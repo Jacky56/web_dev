@@ -1,3 +1,30 @@
 from django.contrib import admin
 
+from tinymce.widgets import TinyMCE
+from django.db import models
+from .models import new_table
+
 # Register your models here.
+
+# can reorganise layout on admin page
+# only fieldsets or fields can be set
+class some_layout_thing(admin.ModelAdmin):
+
+    # reorders stuff
+    # fields = ["title",
+    #           "published",
+    #           "content"]
+
+    # literally pimps out the layout on admin page
+    fieldsets = [
+        ("divider name", {"fields": ["title", "published"]}),
+        ("another divider name", {"fields": ["content"]})
+    ]
+
+    # use someone else's plugin and append to your work.
+    formfield_overrides = {
+        models.TextField: {"widget": TinyMCE()}
+    }
+
+
+admin.site.register(new_table, some_layout_thing)

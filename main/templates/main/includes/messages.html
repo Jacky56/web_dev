@@ -1,0 +1,11 @@
+{% if messages %}
+{% for msg in messages %}
+<script>
+M.toast({
+    html:"{{msg}}",
+    classes: "rounded",
+    displayLength: 2000
+});
+</script>
+{% endfor %}
+{% endif %}
