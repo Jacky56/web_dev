@@ -121,6 +121,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# to store media stuff
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'main/media')
 
 
 TINYMCE_DEFAULT_CONFIG = {
@@ -151,3 +154,10 @@ TINYMCE_DEFAULT_CONFIG = {
     'menubar': True,
     'statusbar': True,
     }
+
+
+
+
+# you can set global variables here
+# and use from django.conf import settings
+HELLO_WORLD = "hello world"

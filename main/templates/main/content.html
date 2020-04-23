@@ -1,0 +1,16 @@
+{% extends "main/layout.html" %}
+
+{%block content%}
+
+<div class="row">
+    <div class="container">
+        <a href="../" class="btn-floating btn-large halfway-fab waves-effect waves-light teal">back</a>
+        <h2 class="header">{{ content.title }}</h2>
+                    <p>
+                        {{ content.content | safe }}
+                    </p>
+        <p>{{content.published}}</p>
+    </div>
+</div>
+
+{%endblock%}

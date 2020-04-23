@@ -1,5 +1,7 @@
+{% load static %}
+
 <head>
-    {% load static %}
+
     <link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet"/>
 
     <!-- Compiled and minified CSS -->
@@ -14,16 +16,17 @@
 <body>
 
     {%include "main/includes/navbar.html"%}
-
     {%include "main/includes/messages.html"%}
 
-    <div class="container">
-        {%block content%}
-        {%endblock%}
-    </div>
+    {%block content%}
+    {%endblock%}
+
 
 
 </body>
+
+
+
 
 
 {%include "main/includes/footer.html"%}
