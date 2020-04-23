@@ -12,51 +12,65 @@ from django.conf import settings
 # Create your views here.
 
 # manages multiple slug values with **kwargs
-def get_slug(request, **kwargs):
-	categories = [c.slug for c in SomeCategory.objects.all()]
-	if len(kwargs) > 0 and kwargs['slug'] in categories:
-		# you need __ to join on tables
-		series = SomeSeries.objects.filter(series_category__slug=kwargs['slug'])
-		series_slugs = [s.slug for s in series.all()]
-		if len(kwargs) > 1 and kwargs['slug2'] in series_slugs:
-			contexts = SomeContext.objects.filter(context_series__slug=kwargs['slug2'])
-			contexts_slug = [c.slug for c in contexts.all()]
-			if len(kwargs) > 2 and kwargs['slug3'] in contexts_slug:
-				context = contexts.filter(slug=kwargs['slug3'])
+def category_slug_url(request, **kwargs):
+	href = {"category": "/category/"}
+	if kwargs:
+		categories = [c.slug for c in SomeCategory.objects.all()]
+		if 'slug0' in kwargs:
+			if kwargs['slug0'] in categories:
+				href[kwargs['slug0']] = "{}{}/".format(href["category"], kwargs['slug0'])
+				# you need __ to join on tables
+				series = SomeSeries.objects.filter(series_category__slug=kwargs['slug0'])
+				series_slugs = [s.slug for s in series.all()]
+				if 'slug1' in kwargs:
+					if kwargs['slug1'] in series_slugs:
+						href[kwargs['slug1']] = "{}{}/".format(href[kwargs['slug0']], kwargs['slug1'])
+						contexts = SomeContext.objects.filter(context_series__slug=kwargs['slug1'])
+						contexts_slug = [c.slug for c in contexts.all()]
+						if 'slug2' in kwargs:
+							if kwargs['slug2'] in contexts_slug:
+								href[kwargs['slug2']] = "{}{}/".format(href[kwargs['slug1']], kwargs['slug2'])
+								context = contexts.filter(slug=kwargs['slug2'])
+								return render(
+									request=request,
+									template_name="main/content.html",
+									context={"content": context.all()[0], "href": href, "categories": contexts.all()}
+								)
+							else:
+								messages.error(
+									request=request,
+									message="{} does not exist.".format(kwargs['slug2'])
+								)
+								return redirect("../")
+						return render(
+							request=request,
+							template_name="main/category.html",
+							context={"categories": contexts.all(), "href": href}
+						)
+					else:
+						messages.error(
+							request=request,
+							message="{} does not exist.".format(kwargs['slug1'])
+						)
+						return redirect("../")
 				return render(
 					request=request,
-					template_name="main/content.html",
-					context={"content": context.all()[0]}
+					template_name="main/category.html",
+					context={"categories": series.all(), "href": href}
 				)
-			if 'slug3' in kwargs:
+			else:
 				messages.error(
 					request=request,
-					message="{} does not exist.".format(kwargs['slug3'])
+					message="{} does not exist.".format(kwargs['slug0'])
 				)
-			return render(
-				request=request,
-				template_name="main/category.html",
-				context={"categories": contexts.all()}
-			)
-
-		if 'slug2' in kwargs:
-			messages.error(
-				request=request,
-				message="{} does not exist.".format(kwargs['slug2'])
-			)
+				return redirect("../")
+	else:
 		return render(
 			request=request,
 			template_name="main/category.html",
-			context={"categories": series.all()}
+			context={"categories": SomeCategory.objects.all(), "href": href}
 		)
 
-
-def category(request):
-	return render(
-		request=request,
-		template_name="main/category.html",
-		context={"categories": SomeCategory.objects.all()}
-	)
 
 def homepage(request):
 	return render(
@@ -115,8 +129,6 @@ def register(request):
 	)
 
 
-
-
 def logout_request(request):
 	if request.user.is_authenticated:
 		username = request.user.username
@@ -127,6 +139,7 @@ def logout_request(request):
 		messages.info(request, "{} logged out!".format(username))
 	return redirect("/")
 
+
 # delete
 def testing_stuff(request):
 	return render(
@@ -134,6 +147,7 @@ def testing_stuff(request):
 		template_name="main/test.html",
 		context={ "nums": range(10)}
 	)
+
 
 def login_request(request):
 	if request.method == "POST":
@@ -157,10 +171,16 @@ def login_request(request):
 				message="invalid username or password"
 			)
 
-
 	form = CustomAuthenticationForm
 	return render(
 		request=request,
 		template_name="main/login.html",
 		context={"form": form}
+	)
+
+
+def neural_networks(request):
+	return render(
+		request=request,
+		template_name="main/neural-networks.html",
 	)

@@ -1,0 +1,40 @@
+{% load static %}
+
+{% if user.is_authenticated %}
+
+ <ul id="profile-side-navbar" class="sidenav">
+
+    <li>
+        <div class="user-view">
+          <div class="background">
+                  <img width="100%" src="{% static 'main/images/background-coffee.png' %}" >
+          </div>
+          <a href="#name"><span class="white-text name">{{ user.username }}</span></a>
+
+          <a href="#email"><span class="white-text email">I will add email later. Its a column in the user db@gmail.com</span></a>
+        </div>
+    </li>
+
+    <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
+    <li><a href="/profile"><i class="material-icons">account_box</i>profile</a></li>
+    <li><div class="divider"></div></li>
+    <li><a class="subheader">Subheader</a></li>
+    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+
+  </ul>
+
+<!--style="left: 23px;right: auto; is to align the button to the left of the screen-->
+<div class="fixed-action-btn " style="left: 23px;right: auto;">
+
+  <a class="btn-floating btn-large sidenav-trigger" data-target="profile-side-navbar">
+      <i class="material-icons">account_box</i>
+  </a>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('.sidenav').sidenav();
+  });
+</script>
+
+{% endif %}

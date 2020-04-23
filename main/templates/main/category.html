@@ -2,20 +2,26 @@
 
 {%block content%}
 
-<div class="row container">
-    <a href="../">back</a>
-</div>
+
+{% include "main/includes/category-navbar.html" %}
 
 <div class="row container">
     {% for c in categories %}
-        <div class="col s12 m4">
+        <div class="col s12 m4 l3">
             <a href="{{c.slug}}/">
                 <div class="card blue-grey darken-1">
-                <div class="card-content white-text">
+                <div class="card-content white-text hoverable">
                     <span class="card-title">{{ c.title }}</span>
+
+                    {% if c.synopsis != None %}
+                         <p>
+                            {{ c.synopsis | safe }}
+                        </p>
+                    {% else %}
                     <p>
                         {{ c.content | safe }}
                     </p>
+                    {% endif %}
                     </div>
             </div>
             </a>

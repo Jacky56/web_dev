@@ -17,7 +17,7 @@ class BasicTest(TestCase):
 
     def test_new_table(self):
         n_table = SomeContext()
-        n_table.title = "ye"
+        n_table.title = "ye.png"
         n_table.content = "?"
         n_table.published = datetime.now()
         n_table.save()

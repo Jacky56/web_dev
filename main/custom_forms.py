@@ -12,18 +12,19 @@ class CustomUserCreationForm(UserCreationForm):
     username = UsernameField(
         label="Username",
         strip=False,
-        widget=forms.TextInput(attrs={'for': 'Username'}),
+        widget=forms.TextInput(attrs={'id': 'Username'}),
         help_text="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
     )
     password1 = forms.CharField(
         label="Password",
         strip=False,
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'for': 'Password1'}),
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'id': 'Password'}),
     )
 
+    # id/classes can have spaces
     password2 = forms.CharField(
         label="Password confirmation",
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'for': 'Password2'}),
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'id': 'Password confirmation'}),
         strip=False,
         help_text="Enter the same password as before, for verification.",
     )
@@ -46,12 +47,12 @@ class CustomAuthenticationForm(AuthenticationForm):
     username = UsernameField(
         label="Username",
         strip=False,
-        widget=forms.TextInput(attrs={'for': 'Username'}),
+        widget=forms.TextInput(attrs={'id': 'Username'}),
     )
     password = forms.CharField(
         label="Password",
         strip=False,
-        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', 'for': 'Password'}),
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', 'id': 'Password'}),
     )
 
 

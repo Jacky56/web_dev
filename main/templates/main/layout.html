@@ -1,22 +1,12 @@
 {% load static %}
 
-<head>
-
-    <link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet"/>
-
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
-</head>
+{%include "main/includes/header.html"%}
 
 
 <body>
-
-    {%include "main/includes/navbar.html"%}
     {%include "main/includes/messages.html"%}
+    {%include "main/includes/navbar.html"%}
+    {%include "main/includes/profile-side-navbar.html"%}
 
     {%block content%}
     {%endblock%}
@@ -25,11 +15,6 @@
 
 </body>
 
-
-
-
-
 {%include "main/includes/footer.html"%}
-
 
 <script src="{% static 'tinymce/js/prism.js' %}"> </script>

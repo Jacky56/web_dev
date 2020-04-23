@@ -41,12 +41,15 @@ class SomeSeries(models.Model):
 class SomeContext(models.Model):
     # column named title
     title = models.CharField(max_length=200)
+
+    synopsis = models.CharField(help_text="provide a synopsis for the content", max_length=200)
+
     # column named content
     content = models.TextField(default="you can set default value")
     # columned named published
     published = models.DateTimeField("date name ?")
     # for URL
-    slug = models.SlugField(unique=False, max_length=50)
+    slug = models.CharField(max_length=50)
     # ForeignKey
     context_series = models.ForeignKey(SomeSeries, default=1, verbose_name="Series", on_delete=models.CASCADE)
 

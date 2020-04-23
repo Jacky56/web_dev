@@ -22,14 +22,15 @@ app_name = "main"
 
 urlpatterns = [
 	path("", views.homepage, name="homepage"),
-	path("category/", views.category, name="category"),
+	path("category/", views.category_slug_url, name="category"),
 	path("register/", views.register, name="register"),
 	path("logout/", views.logout_request, name="logout"),
 	path("login/", views.login_request, name="login"),
 	path("profile/", views.profile, name="profile"),
-	path("category/<slug>/", views.get_slug, name="series"),
-	path("category/<slug>/<slug2>/", views.get_slug, name="contents"),
-	path("category/<slug>/<slug2>/<slug3>/", views.get_slug, name="content"),
+	path("neural-networks/", views.neural_networks, name="neural-networks"),
+	path("category/<slug0>/", views.category_slug_url, name="series"),
+	path("category/<slug0>/<slug1>/", views.category_slug_url, name="contents"),
+	path("category/<slug0>/<slug1>/<slug2>/", views.category_slug_url, name="content"),
 	path("test/", views.testing_stuff, name="test"),
 	path("tomkat/", views.tomkat, name="tomkat"),
 ]

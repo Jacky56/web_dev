@@ -1,0 +1,28 @@
+{% extends "main/layout.html" %}
+
+{% load static %}
+
+{%block content%}
+
+<div class="row container">
+    <h1>Neural networks</h1>
+    <div class="divider"></div>
+    <p>The idea is to add a light weight keras model here to do some computer vision stuff.</p>
+</div>
+
+<div class="row container">
+    <div class="card-panel col s4 push-s4">
+        <img class="materialboxed responsive-img" style="width:auto;vertical-align:middle" src="{% static 'main/images/nerualnetworks.png' %}">
+    </div>
+</div>
+<div class="row container">
+    <p>only the tutorial page is somewhat functional.</p>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('.materialboxed').materialbox();
+    });
+</script>
+
+{%endblock%}
