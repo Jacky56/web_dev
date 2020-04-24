@@ -33,4 +33,5 @@ urlpatterns = [
 	path("category/<slug0>/<slug1>/<slug2>/", views.category_slug_url, name="content"),
 	path("test/", views.testing_stuff, name="test"),
 	path("tomkat/", views.tomkat, name="tomkat"),
+	path("chris/", views.chris, name="chris"),
 ]

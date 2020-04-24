@@ -1,6 +1,6 @@
 from django.test import RequestFactory, TestCase
 from django.conf import settings
-from .models import SomeContext
+from .models import SomeContext, SomeCategory, SomeSeries
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -58,7 +58,50 @@ class BasicTest(TestCase):
         self.assertEqual(loggedin, user)
 
 
+    def using_object_raw(self):
+        request = self.factory.get("/customer/details")
+        category = SomeCategory()
+        category.title = "cate"
+        category.content = "stuff"
+        category.slug = "cate"
+        category.save()
 
+        series = SomeSeries()
+        series.title = "seri"
+        series.content = "series sutff"
+        series.slug = "series"
+        series.series_category = category
+        series.save()
+
+        content = SomeContext()
+        content.title = "cont"
+        content.content = "bits body"
+        content.published = datetime.now()
+        content.context_series = series
+        content.synopsis = "brief"
+        content.slug = "content"
+        content.save()
+
+        # to query your table it has to be <app_name>_<table>
+        for r in SomeCategory.objects.raw("select * from main_SomeCategory"):
+            print(r.title)
+            print(r.content)
+            print(r.slug)
+
+        print("--------------------")
+        # to query your table it has to be <app_name>_<table>
+        for r in SomeSeries.objects.raw("select * from main_SomeSeries"):
+            print(r.title)
+            print(r.content)
+            print(r.slug)
+            print(r.series_category)
+
+        print("--------------------")
+
+        # to query your table it has to be <app_name>_<table>
+        # reference keys must contin suffix _id
+        for r in SomeContext.objects.raw("select * from main_SomeContext"):
+            print(r.context_series_id)
 
 
 

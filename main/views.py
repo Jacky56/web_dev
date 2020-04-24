@@ -79,13 +79,6 @@ def homepage(request):
 	)
 
 
-def tomkat(request):
-	return render(
-		request = request,
-		template_name = "main/tomkat.html",
-	)
-
-
 def profile(request):
 	return render(
 		request=request,
@@ -183,4 +176,17 @@ def neural_networks(request):
 	return render(
 		request=request,
 		template_name="main/neural-networks.html",
+	)
+
+
+def tomkat(request):
+	return render(
+		request = request,
+		template_name = "main/tomkat.html",
+	)
+
+def chris(request):
+	return render(
+		request = request,
+		template_name = "main/chris.html",
 	)

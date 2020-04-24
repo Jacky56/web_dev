@@ -47,7 +47,7 @@ class CustomAuthenticationForm(AuthenticationForm):
     username = UsernameField(
         label="Username",
         strip=False,
-        widget=forms.TextInput(attrs={'id': 'Username'}),
+        widget=forms.TextInput(attrs={'id': 'Username' ,'autofocus': 'autofocus'}),
     )
     password = forms.CharField(
         label="Password",

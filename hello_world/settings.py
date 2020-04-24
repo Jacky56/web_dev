@@ -25,7 +25,7 @@ SECRET_KEY = 'y6h*jlo9*9j$=-z*4fiko$oei!9jldgldnlu_pgz*bbl_$vz-k'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['jackyha.me', 'www.jackyha.me', '127.0.0.1']
 
 
 # Application definition
@@ -120,11 +120,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
 # to store media stuff
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'main/media')
-
+#MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TINYMCE_DEFAULT_CONFIG = {
     'height': 360,
