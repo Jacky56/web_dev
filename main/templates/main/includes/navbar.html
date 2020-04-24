@@ -1,22 +1,13 @@
 
-<nav>
-    <div class="nav-wrapper">
-      <div class="row container">
-      <a href="/" class="brand-logo center">its me, wario</a>
-      <ul id="nav-mobile" class="left hide-on-med-and-down">
-        <li><a href="/">Home</a></li>
-        <li><a href="/category">tutorials</a></li>
-          {% if user.is_authenticated %}
-            <li><a href="/logout">logout</a></li>
-          {% else %}
-            <li><a href="/login">login</a></li>
-            <li><a href="/register">register</a></li>
-          {% endif %}
-<!--          <li><a href="/tomkat">deadly amalgamation</a></li>-->
-        <li><a href="/neural-networks">neural networks</a></li>
+<nav class="hide-on-small-and-down">
+    <div class="nav-wrapper container">
+      {% include "main/includes/logo.html" %}
+      <ul id="nav-mobile" class="left">
+        {% include "main/includes/navbar-content.html" %}
       </ul>
-      </div>
     </div>
 </nav>
+
+
 
 
