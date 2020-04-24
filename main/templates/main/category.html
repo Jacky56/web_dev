@@ -14,7 +14,7 @@
                     <span class="card-title">{{ c.title }}</span>
 
                     {% if c.synopsis != None %}
-                         <p>
+                         <p class="truncate">
                             {{ c.synopsis | safe }}
                         </p>
                     {% else %}

@@ -4,12 +4,12 @@ from tinymce.widgets import TinyMCE
 from django.db import models
 from .models import SomeCategory, SomeSeries, SomeContext, UserProfile
 
+
 # Register your models here.
 
 # can reorganise layout on admin page
 # only fieldsets or fields can be set
 class some_layout_thing(admin.ModelAdmin):
-
     # reorders stuff
     # fields = ["title",
     #           "published",
@@ -23,7 +23,12 @@ class some_layout_thing(admin.ModelAdmin):
 
     # use someone else's plugin and append to your work.
     formfield_overrides = {
-        models.TextField: {"widget": TinyMCE()}
+        models.TextField: {"widget": TinyMCE(mce_attrs={
+            "extended_valid_elements":
+                "img[class=responsive-img materialboxed|src|width|height|id],"
+                + "iframe[width=100%|class|src|height|id]"
+        })
+        }
     }
 
 
