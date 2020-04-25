@@ -135,6 +135,7 @@ def logout_request(request):
 
 # delete
 def testing_stuff(request):
+
 	return render(
 		request,
 		template_name="main/test.html",
