@@ -1,13 +1,21 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import SomeContext, SomeCategory, SomeSeries
+from .models import SomeContext, SomeCategory, SomeSeries, UploadImagesNN
 from django.contrib import messages
 # from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
-from .custom_forms import CustomUserCreationForm, CustomAuthenticationForm
+from .custom_forms import CustomUserCreationForm, CustomAuthenticationForm, UploadFileForm
 from django.contrib.auth.models import User
-
+import numpy as np
+import cv2
+from .apps import MainConfig
+from keras.preprocessing.image import load_img, img_to_array
 from django.conf import settings
+
+import tensorflow as tf
+
+global graph
+graph = tf.get_default_graph()
 
 # Create your views here.
 
@@ -135,11 +143,55 @@ def logout_request(request):
 
 # delete
 def testing_stuff(request):
+	if request.method == 'POST':
+		form = UploadFileForm(request.POST, request.FILES)
+		if form.is_valid():
+			# tmp_img = form.save(commit=False)
+			# get raw binary image
+			raw_img = request.FILES["image"]
+			#converts raw image to np.array
+			img = cv2.imdecode(np.fromstring(raw_img.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+			# loads model for detecting face
+			haar_cascade_face = settings.FACE_DETECTOR
+			# find faces
+
+			faces_rects = haar_cascade_face.detectMultiScale(img, scaleFactor=1.1, minNeighbors=6)
+
+			if len(faces_rects) > 0:
+				form.x, form.y, form.width, form.height = faces_rects[0]
+				form.size = 64
+				final_img = form.save()
+				ins = img_to_array(load_img(final_img.image.path))
+				with graph.as_default():
+					prediction = np.around(MainConfig.MODEL.predict(np.array([ins/255.])))
+					attributes = [e[1] for e in zip(prediction[0], MainConfig.LABELS) if e[0] == 1]
+
+					return HttpResponse(
+						"""
+						<p>{}</p>
+						<img src="{}" />
+						{}
+						{}
+						{}
+						{}
+						{}
+						{}
+						""".format(final_img.image.url, final_img.image.url,  form.x, form.y, form.width, form.height, attributes, final_img.image.path)
+				)
+			else:
+				messages.error(
+					request=request,
+					message="Cant find any faces!"
+				)
+
+
+
+	form = UploadFileForm
 
 	return render(
 		request,
 		template_name="main/test.html",
-		context={ "nums": range(10)}
+		context={"form": form}
 	)
 
 

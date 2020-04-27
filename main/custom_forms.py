@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField
 from django.contrib.auth.models import User
-
+from . import models
+from PIL import Image
 
 # create custom form
 class CustomUserCreationForm(UserCreationForm):
@@ -54,6 +55,39 @@ class CustomAuthenticationForm(AuthenticationForm):
         strip=False,
         widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', 'id': 'Password'}),
     )
+
+
+class UploadFileForm(forms.ModelForm):
+    x = 0
+    y = 0
+    width = 0
+    height = 0
+    size = 0
+
+    class Meta:
+        model = models.UploadImagesNN
+        fields = ("image",)
+
+    def save(self, commit=True):
+        upload = super(UploadFileForm, self).save()
+
+        x = self.x
+        y = self.y
+        w = self.width
+        h = self.height
+        size = self.size
+        image = Image.open(upload.image)
+
+        cropped_image = image.crop((x, y, w+x, h+y))
+        resized_image = cropped_image.resize((size, size), Image.ANTIALIAS)
+        resized_image.save(upload.image.path)
+
+        return upload
+
+
+
+
+
 
 
 

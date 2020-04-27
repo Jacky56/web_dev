@@ -72,6 +72,13 @@ class UserProfile(models.Model):
         return self.user.username
 
 
+class UploadImagesNN(models.Model):
+    image = models.ImageField(upload_to="main/nn/faceclassification/tmp")
+
+    def __str__(self):
+        return self.image.name
+
+
 # create methods to cascade actions
 # creates a user profile when user is created
 

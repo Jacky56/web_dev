@@ -3,39 +3,40 @@
 {%include "main/includes/header.html"%}
 
 <body>
-<div class="container">
-    <div class="video=container">
-<iframe  src="//www.youtube.com/embed/ZSzGIXYuE1I" width="400" height="300" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
-            <div class="col m3 l3 right">
-        <div class="collection">
+{%include "main/includes/messages.html"%}
+<!--<button onclick="getOutput()">Click me</button>-->
 
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
+<!--<img id="img" src="{% static 'main/images/cat.png' %}">-->
 
+<!--<p id="info"></p>-->
 
-
-        </div>
-    </div>
-</div>
-
-</div>
-
-
-
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <button class="btn" type="submit">register</button>
+</form>
 
 </body>
 
-<script>
-    $(document).ready(function(){
-        $('.materialboxed').materialbox();
-    });
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.1"> </script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@1.0.0"> </script>
 
 <script src="{% static 'tinymce/js/prism.js' %}"> </script>
+
+<script>
+  // Notice there is no 'import' statement. 'mobilenet' and 'tf' is
+  // available on the index-page because of the script tag above.
+function getOutput(event) {
+      const img = document.getElementById('img');
+      mobilenet.load().then(model => {
+        // Classify the image.
+        model.classify(img).then(predictions => {
+        var text = document.createTextNode(predictions[0]["className"]);
+        console.log(predictions)
+        document.getElementById("info").appendChild(text);
+
+        });
+      });
+  }
+
+</script>

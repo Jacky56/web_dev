@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import cv2
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'y6h*jlo9*9j$=-z*4fiko$oei!9jldgldnlu_pgz*bbl_$vz-k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['jackyha.me', 'www.jackyha.me', '127.0.0.1']
 
@@ -37,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main.apps.MainConfig',
+    'main',
     'tinymce',
 ]
 
@@ -122,9 +123,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # to store media stuff
 MEDIA_URL = '/media/'
-#MEDIA_ROOT = os.path.join(BASE_DIR, 'main/media')
-MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'main/media')
+#MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TINYMCE_DEFAULT_CONFIG = {
     'height': 360,
@@ -161,3 +162,19 @@ TINYMCE_DEFAULT_CONFIG = {
 # you can set global variables here
 # and use from django.conf import settings
 HELLO_WORLD = "hello world"
+
+v1 = "haarcascade_profileface.xml"
+v2 = "haarcascade_frontalface_default.xml"
+v3 = "haarcascade_frontalface_alt.xml"
+FACE_DETECTOR = cv2.CascadeClassifier("{}/main/static/main/nn/face/{}".format(BASE_DIR, v1))
+
+# from keras.models import load_model
+model_v1 = "discriminator_2x2_tiny_label_25.h5"
+# MODEL = load_model("{}/main/static/main/nn/face/{}".format(BASE_DIR, model_v1))
+
+LABELS = ['Arched_Eyebrows', 'Attractive', 'Bags_Under_Eyes', 'Bald',
+          'Bangs', 'Big_Lips', 'Big_Nose', 'Bushy_Eyebrows', 'Chubby',
+          'Double_Chin', 'Gray_Hair', 'Heavy_Makeup', 'High_Cheekbones',
+          'Male', 'Narrow_Eyes', 'Oval_Face', 'Pale_Skin', 'Pointy_Nose',
+          'Receding_Hairline', 'Rosy_Cheeks', 'Smiling', 'Straight_Hair',
+          'Wavy_Hair', 'Wearing_Lipstick', 'Young']
