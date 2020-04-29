@@ -4,26 +4,78 @@
 
 {%block content%}
 
-<div class="row container">
+<div class="container">
+
     <h1>Neural networks</h1>
     <div class="divider"></div>
-    <p>The idea is to add a light weight keras model here to do some computer vision stuff.</p>
-</div>
 
-<div class="row container">
-    <div class="card-panel col m10 push-m1 col l6 push-l3">
-        <img class="materialboxed responsive-img" src="{% static 'main/images/nerualnetworks.png' %}">
+    <div class="row container">
+        <p>Welcome to this page, this detector uses the state of the art technology to describe what you look like when you can't simply look at a mirror!</p>
+        <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+            {% for field in form %}
+            <div class="input-field">
+                {{field}}
+                <span class="helper-text">{{field.help_text}}</span>
+            </div>
+            {% endfor %}
+        <button class="btn" type="submit">submit</button>
+        </form>
     </div>
-</div>
 
-<div class="row container">
-    <p>only the tutorial page is somewhat functional.</p>
-</div>
+    <div class="row container">
+        {% if attributes %}
+        <div class="row">
+            <h5>Attributes</h5>
+            <div class="divider"></div>
+        </div>
+        {% endif %}
 
+        <div class="row ">
+        <div class="col">
+            {% if attributes %}
+            <ul>
+                {% for attribute in attributes %}
+                    <li>{{attribute}}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+        </div>
+        {% if image_face %}
+            <br>
+            <div class="col right">
+                <img class="materialboxed circle" src="{{image_face.image.url}}" />
+            </div>
+        {% endif %}
+
+        </div>
+    </div>
+
+    <div class="row container">
+        <div class="col m10 push-m1 col l6 push-l3">
+            <img class="materialboxed responsive-img" id="image-preview" />
+        </div>
+    </div>
+
+</div>
 <script>
     $(document).ready(function(){
         $('.materialboxed').materialbox();
     });
+
+
+    document.getElementById("image-input").onchange = function () {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+        // get loaded data and render thumbnail.
+        document.getElementById("image-preview").src = e.target.result;
+    };
+
+    // read the image file as a data URL.
+    reader.readAsDataURL(this.files[0]);
+    };
 </script>
 
 {%endblock%}

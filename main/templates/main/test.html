@@ -3,39 +3,38 @@
 {%include "main/includes/header.html"%}
 
 <body>
-<div class="container">
-    <div class="video=container">
-<iframe  src="//www.youtube.com/embed/ZSzGIXYuE1I" width="400" height="300" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
-            <div class="col m3 l3 right">
-        <div class="collection">
+{%include "main/includes/messages.html"%}
+<!--<button onclick="getOutput()">Click me</button>-->
 
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
-            <p>asdsadsaf</p>
+<!--<img id="img" src="{% static 'main/images/cat.png' %}">-->
 
+<!--<p id="info"></p>-->
 
-
-        </div>
-    </div>
-</div>
-
-</div>
-
-
-
-
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <button class="btn" type="submit">register</button>
+</form>
+ <img id="image-preview" />
 </body>
 
-<script>
-    $(document).ready(function(){
-        $('.materialboxed').materialbox();
-    });
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.1"> </script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@1.0.0"> </script>
 
 <script src="{% static 'tinymce/js/prism.js' %}"> </script>
+
+<script type="text/javascript">
+
+document.getElementById("image-input").onchange = function () {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+        // get loaded data and render thumbnail.
+        document.getElementById("image-preview").src = e.target.result;
+    };
+
+    // read the image file as a data URL.
+    reader.readAsDataURL(this.files[0]);
+};
+
+</script>

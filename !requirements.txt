@@ -1,0 +1,10 @@
+python3 -m pip install django
+python3 -m pip install django-tinymce4-lite
+python3 -m pip install numpy
+python3 -m pip install pandas
+python3 -m pip install opencv-python
+python3 -m pip install opencv-contrib-python
+python3 -m pip install keras
+python3 -m pip install tf
+python3 -m pip install Pillow
+python3 -m pip install mtcnn

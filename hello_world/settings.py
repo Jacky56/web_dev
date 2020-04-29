@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'y6h*jlo9*9j$=-z*4fiko$oei!9jldgldnlu_pgz*bbl_$vz-k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['jackyha.me', 'www.jackyha.me', '127.0.0.1']
 
@@ -37,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main.apps.MainConfig',
+    'main',
     'tinymce',
 ]
 
@@ -122,9 +123,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # to store media stuff
 MEDIA_URL = '/media/'
-#MEDIA_ROOT = os.path.join(BASE_DIR, 'main/media')
-MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'main/media')
+#MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TINYMCE_DEFAULT_CONFIG = {
     'height': 360,

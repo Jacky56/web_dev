@@ -1,9 +1,10 @@
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, Client
 from django.conf import settings
 from .models import SomeContext, SomeCategory, SomeSeries
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.core.files.uploadedfile import SimpleUploadedFile
 # Create your tests here.
 
 
@@ -13,6 +14,14 @@ class BasicTest(TestCase):
     def setUp(self):
         # used to create a fake request
         self.factory = RequestFactory()
+
+
+    def test_upload_image(self):
+        c = Client()
+        with open("{}/main/static/main/images/ye.png", settings.BASE_DIR) as img_file:
+            c.post("/not/sure/", {"name": "ye.png", "attachment": img_file})
+
+
 
 
     def test_new_table(self):
@@ -28,6 +37,8 @@ class BasicTest(TestCase):
 
     def test_media_root(self):
         print(settings.MEDIA_ROOT)
+        print(settings.BASE_DIR)
+        print(settings.STATIC_ROOT)
         pass
 
     def test_one(self):
