@@ -63,6 +63,11 @@ class UploadFileForm(forms.ModelForm):
     width = 0
     height = 0
     size = 0
+    image = forms.ImageField(
+        label="Image",
+        widget=forms.FileInput(attrs={'id': 'image-input'}),
+        help_text="Add a picture of yourself and see what it can do!",
+    )
 
     class Meta:
         model = models.UploadImagesNN
@@ -70,17 +75,17 @@ class UploadFileForm(forms.ModelForm):
 
     def save(self, commit=True):
         upload = super(UploadFileForm, self).save()
-
-        x = self.x
-        y = self.y
-        w = self.width
-        h = self.height
-        size = self.size
-        image = Image.open(upload.image)
-
-        cropped_image = image.crop((x, y, w+x, h+y))
-        resized_image = cropped_image.resize((size, size), Image.ANTIALIAS)
-        resized_image.save(upload.image.path)
+        #
+        # x = self.x
+        # y = self.y
+        # w = self.width
+        # h = self.height
+        # size = self.size
+        # image = Image.open(upload.image)
+        #
+        # cropped_image = image.crop((x, y, w+x, h+y))
+        # resized_image = cropped_image.resize((size, size), Image.BILINEAR)
+        # resized_image.save(upload.image.path)
 
         return upload
 

@@ -7,11 +7,12 @@ from django.contrib.auth import login, logout, authenticate
 from .custom_forms import CustomUserCreationForm, CustomAuthenticationForm, UploadFileForm
 from django.contrib.auth.models import User
 import numpy as np
-import cv2
+from PIL import Image
 from .apps import MainConfig
 from keras.preprocessing.image import load_img, img_to_array
-from django.conf import settings
-
+from io import BytesIO
+import base64
+from .functions import to_square
 import tensorflow as tf
 
 global graph
@@ -148,23 +149,46 @@ def testing_stuff(request):
 		if form.is_valid():
 			# tmp_img = form.save(commit=False)
 			# get raw binary image
-			raw_img = request.FILES["image"]
+			# raw_img = request.FILES["image"]
+			uploaded_img = form.cleaned_data.get("image")
 			#converts raw image to np.array
-			img = cv2.imdecode(np.fromstring(raw_img.read(), np.uint8), cv2.IMREAD_UNCHANGED)
-			# loads model for detecting face
-			haar_cascade_face = settings.FACE_DETECTOR
-			# find faces
+			# image_file = StringIO(str(raw_img.read()))
 
-			faces_rects = haar_cascade_face.detectMultiScale(img, scaleFactor=1.1, minNeighbors=6)
+			# img = cv2.imdecode(np.fromstring(raw_img.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+			img = Image.open(BytesIO(uploaded_img.read()))
+			w, h = img.size
+			# down size the image if too big for detecting
+			while max(w, h) > 1000:
+				img = img.resize((w // 2, h // 2), Image.ANTIALIAS)
+				w, h = img.size
+
+			# loads model for detecting face
+			# haar_cascade_face = MainConfig.FACE_DETECTOR
+			# faces_rects = haar_cascade_face.detectMultiScale(np.array(img), scaleFactor=1.1, minNeighbors=5)
+
+			with graph.as_default():
+				faces_rects = MainConfig.FACE_DETECTOR.detect_faces(np.array(img)[:, :, :3])
 
 			if len(faces_rects) > 0:
-				form.x, form.y, form.width, form.height = faces_rects[0]
-				form.size = 64
+				x, y, width, height = faces_rects[0]['box']
+				x, y, width, height = to_square(x, y, width, height)
+				size = 64
+
+				# for resizing image
+				img = img.crop((x, y, width + x, height + y))
+				img = img.resize((size, size), Image.ANTIALIAS)
+
+				# saving image
+				img_file = BytesIO()
+				img.save(img_file, 'PNG')
+				uploaded_img.file = img_file
 				final_img = form.save()
-				ins = img_to_array(load_img(final_img.image.path))
+
+				# predicting with model
 				with graph.as_default():
-					prediction = np.around(MainConfig.MODEL.predict(np.array([ins/255.])))
-					attributes = [e[1] for e in zip(prediction[0], MainConfig.LABELS) if e[0] == 1]
+					# ins = img_to_array(load_img(final_img.image.path))
+					prediction = MainConfig.MODEL.predict(np.array([np.array(img)[:, :, :3]/255.]))
+					attributes = [e[1] for e in zip(prediction[0], MainConfig.LABELS) if e[0] > 0.1]
 
 					return HttpResponse(
 						"""
@@ -176,15 +200,13 @@ def testing_stuff(request):
 						{}
 						{}
 						{}
-						""".format(final_img.image.url, final_img.image.url,  form.x, form.y, form.width, form.height, attributes, final_img.image.path)
+						""".format(final_img.image.url, final_img.image.url,  x, y, width, height, attributes, final_img.image.path)
 				)
 			else:
 				messages.error(
 					request=request,
 					message="Cant find any faces!"
 				)
-
-
 
 	form = UploadFileForm
 
@@ -226,9 +248,71 @@ def login_request(request):
 
 
 def neural_networks(request):
+
+	if request.method == 'POST':
+		form = UploadFileForm(request.POST, request.FILES)
+		if form.is_valid():
+			# tmp_img = form.save(commit=False)
+			# get raw binary image
+			# raw_img = request.FILES["image"]
+			uploaded_img = form.cleaned_data.get("image")
+			#converts raw image to np.array
+			# image_file = StringIO(str(raw_img.read()))
+
+			# img = cv2.imdecode(np.fromstring(raw_img.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+			img = Image.open(BytesIO(uploaded_img.read()))
+			w, h = img.size
+			# down size the image if too big for detecting
+			while max(w, h) > 1000:
+				img = img.resize((w // 2, h // 2), Image.ANTIALIAS)
+				w, h = img.size
+
+			with graph.as_default():
+				faces_rects = MainConfig.FACE_DETECTOR.detect_faces(np.array(img)[:, :, :3])
+
+			if len(faces_rects) > 0:
+				if len(faces_rects) > 1:
+					messages.info(
+						request=request,
+						message="There's like {} faces in that photo, picking the first one.".format(len(faces_rects))
+					)
+
+				x, y, width, height = faces_rects[0]['box']
+				x, y, width, height = to_square(x, y, width, height)
+				size = 64
+
+				# for resizing image
+				img = img.crop((x, y, width + x, height + y))
+				img = img.resize((size, size), Image.ANTIALIAS)
+
+				# saving image
+				img_file = BytesIO()
+				img.save(img_file, 'PNG')
+				uploaded_img.file = img_file
+				final_img = form.save()
+
+				# predicting with model
+				with graph.as_default():
+					# ins = img_to_array(load_img(final_img.image.path))
+					prediction = MainConfig.MODEL.predict(np.array([np.array(img)[:, :, :3]/255.]))
+					attributes = [e[1] for e in zip(prediction[0], MainConfig.LABELS) if e[0] > 0.1]
+					return render(
+						request=request,
+						template_name="main/neural-networks.html",
+						context={"form": form, "attributes": attributes, "image_face": final_img}
+					)
+
+			else:
+				messages.error(
+					request=request,
+					message="Can't find any faces!"
+				)
+
+	form = UploadFileForm
 	return render(
 		request=request,
 		template_name="main/neural-networks.html",
+		context={"form": form}
 	)
 
 

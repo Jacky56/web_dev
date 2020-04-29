@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import cv2
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -162,19 +162,3 @@ TINYMCE_DEFAULT_CONFIG = {
 # you can set global variables here
 # and use from django.conf import settings
 HELLO_WORLD = "hello world"
-
-v1 = "haarcascade_profileface.xml"
-v2 = "haarcascade_frontalface_default.xml"
-v3 = "haarcascade_frontalface_alt.xml"
-FACE_DETECTOR = cv2.CascadeClassifier("{}/main/static/main/nn/face/{}".format(BASE_DIR, v1))
-
-# from keras.models import load_model
-model_v1 = "discriminator_2x2_tiny_label_25.h5"
-# MODEL = load_model("{}/main/static/main/nn/face/{}".format(BASE_DIR, model_v1))
-
-LABELS = ['Arched_Eyebrows', 'Attractive', 'Bags_Under_Eyes', 'Bald',
-          'Bangs', 'Big_Lips', 'Big_Nose', 'Bushy_Eyebrows', 'Chubby',
-          'Double_Chin', 'Gray_Hair', 'Heavy_Makeup', 'High_Cheekbones',
-          'Male', 'Narrow_Eyes', 'Oval_Face', 'Pale_Skin', 'Pointy_Nose',
-          'Receding_Hairline', 'Rosy_Cheeks', 'Smiling', 'Straight_Hair',
-          'Wavy_Hair', 'Wearing_Lipstick', 'Young']
