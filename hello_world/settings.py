@@ -162,3 +162,7 @@ TINYMCE_DEFAULT_CONFIG = {
 # you can set global variables here
 # and use from django.conf import settings
 HELLO_WORLD = "hello world"
+
+# FILE_UPLOAD_HANDLERS = [
+#     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+# ]

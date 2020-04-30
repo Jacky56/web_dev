@@ -8,11 +8,12 @@ from .custom_forms import CustomUserCreationForm, CustomAuthenticationForm, Uplo
 from django.contrib.auth.models import User
 import numpy as np
 from PIL import Image
+from PIL import Image
 from .apps import MainConfig
 from keras.preprocessing.image import load_img, img_to_array
 from io import BytesIO
 import base64
-from .functions import to_square
+from .functions import get_face, down_size_image, to_np_image, format_predictions
 import tensorflow as tf
 
 global graph
@@ -156,11 +157,8 @@ def testing_stuff(request):
 
 			# img = cv2.imdecode(np.fromstring(raw_img.read(), np.uint8), cv2.IMREAD_UNCHANGED)
 			img = Image.open(BytesIO(uploaded_img.read()))
-			w, h = img.size
-			# down size the image if too big for detecting
-			while max(w, h) > 1000:
-				img = img.resize((w // 2, h // 2), Image.ANTIALIAS)
-				w, h = img.size
+
+			img = down_size_image(img, 1000)
 
 			# loads model for detecting face
 			# haar_cascade_face = MainConfig.FACE_DETECTOR
@@ -170,13 +168,7 @@ def testing_stuff(request):
 				faces_rects = MainConfig.FACE_DETECTOR.detect_faces(np.array(img)[:, :, :3])
 
 			if len(faces_rects) > 0:
-				x, y, width, height = faces_rects[0]['box']
-				x, y, width, height = to_square(x, y, width, height)
-				size = 64
-
-				# for resizing image
-				img = img.crop((x, y, width + x, height + y))
-				img = img.resize((size, size), Image.ANTIALIAS)
+				img = get_face(img, 64, faces_rects)
 
 				# saving image
 				img_file = BytesIO()
@@ -188,19 +180,16 @@ def testing_stuff(request):
 				with graph.as_default():
 					# ins = img_to_array(load_img(final_img.image.path))
 					prediction = MainConfig.MODEL.predict(np.array([np.array(img)[:, :, :3]/255.]))
-					attributes = [e[1] for e in zip(prediction[0], MainConfig.LABELS) if e[0] > 0.1]
+					attributes = format_predictions(prediction[0], MainConfig.LABELS)
 
 					return HttpResponse(
 						"""
 						<p>{}</p>
 						<img src="{}" />
 						{}
+
 						{}
-						{}
-						{}
-						{}
-						{}
-						""".format(final_img.image.url, final_img.image.url,  x, y, width, height, attributes, final_img.image.path)
+						""".format(final_img.image.url, final_img.image.url,  attributes, final_img.image.path)
 				)
 			else:
 				messages.error(
@@ -252,23 +241,20 @@ def neural_networks(request):
 	if request.method == 'POST':
 		form = UploadFileForm(request.POST, request.FILES)
 		if form.is_valid():
-			# tmp_img = form.save(commit=False)
-			# get raw binary image
-			# raw_img = request.FILES["image"]
-			uploaded_img = form.cleaned_data.get("image")
-			#converts raw image to np.array
-			# image_file = StringIO(str(raw_img.read()))
 
-			# img = cv2.imdecode(np.fromstring(raw_img.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+			#get img data
+			uploaded_img = form.cleaned_data.get("image")
+
+			#convert to pillow.Image
 			img = Image.open(BytesIO(uploaded_img.read()))
-			w, h = img.size
-			# down size the image if too big for detecting
-			while max(w, h) > 1000:
-				img = img.resize((w // 2, h // 2), Image.ANTIALIAS)
-				w, h = img.size
+
+			#makes img small if too big
+			img = down_size_image(img, 1000)
+
 
 			with graph.as_default():
-				faces_rects = MainConfig.FACE_DETECTOR.detect_faces(np.array(img)[:, :, :3])
+				#grab face
+				faces_rects = MainConfig.FACE_DETECTOR.detect_faces(to_np_image(img))
 
 			if len(faces_rects) > 0:
 				if len(faces_rects) > 1:
@@ -276,14 +262,8 @@ def neural_networks(request):
 						request=request,
 						message="There's like {} faces in that photo, picking the first one.".format(len(faces_rects))
 					)
-
-				x, y, width, height = faces_rects[0]['box']
-				x, y, width, height = to_square(x, y, width, height)
-				size = 64
-
-				# for resizing image
-				img = img.crop((x, y, width + x, height + y))
-				img = img.resize((size, size), Image.ANTIALIAS)
+				#get face from landmarks
+				img = get_face(img, 64, faces_rects)
 
 				# saving image
 				img_file = BytesIO()
@@ -293,9 +273,9 @@ def neural_networks(request):
 
 				# predicting with model
 				with graph.as_default():
-					# ins = img_to_array(load_img(final_img.image.path))
+					#classify image
 					prediction = MainConfig.MODEL.predict(np.array([np.array(img)[:, :, :3]/255.]))
-					attributes = [e[1] for e in zip(prediction[0], MainConfig.LABELS) if e[0] > 0.1]
+					attributes = format_predictions(prediction[0], MainConfig.LABELS)
 					return render(
 						request=request,
 						template_name="main/neural-networks.html",
