@@ -7,8 +7,8 @@ class MainConfig(AppConfig):
 
     FACE_DETECTOR = MTCNN()
     model_v1 = "Res_267k_64_label_25.h5"
-    MODEL = load_model("{}/main/static/main/nn/face/{}".format(settings.BASE_DIR, model_v1))
-    # MODEL = load_model("{}/main/nn/face/{}".format(settings.STATIC_ROOT, model_v1))
+    #MODEL = load_model("{}/main/static/main/nn/face/{}".format(settings.BASE_DIR, model_v1))
+    MODEL = load_model("{}/main/nn/face/{}".format(settings.STATIC_ROOT, model_v1))
 
     # label size = 25
     LABELS = ['Arched Eyebrows', 'Attractive', 'Bags Under Eyes', 'Bald',

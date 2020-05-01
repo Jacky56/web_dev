@@ -123,9 +123,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # to store media stuff
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'main/media')
-#MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'main/media')
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TINYMCE_DEFAULT_CONFIG = {
     'height': 360,
