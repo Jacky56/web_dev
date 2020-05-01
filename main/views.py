@@ -8,20 +8,18 @@ from .custom_forms import CustomUserCreationForm, CustomAuthenticationForm, Uplo
 from django.contrib.auth.models import User
 import numpy as np
 from PIL import Image
-from PIL import Image
 from .apps import MainConfig
-from keras.preprocessing.image import load_img, img_to_array
-from io import BytesIO
-import base64
-from .functions import get_face, down_size_image, to_np_image, format_predictions
+from .functions import Functions
 import tensorflow as tf
 
 global graph
 graph = tf.get_default_graph()
+global f
+f = Functions()
 
 # Create your views here.
 
-# manages multiple slug values with **kwargs
+# this version will reset url if user place strange values
 def category_slug_url(request, **kwargs):
 	href = {"category": "/category/"}
 	if kwargs:
@@ -81,6 +79,46 @@ def category_slug_url(request, **kwargs):
 			context={"categories": SomeCategory.objects.all(), "href": href}
 		)
 
+# manages multiple slug values with **kwargs
+def category_slug_url1(request, **kwargs):
+	href = {"category": "/category/"}
+	if kwargs:
+		categories = [c.slug for c in SomeCategory.objects.all()]
+		value = f.find_slug(categories, 'slug0', kwargs)
+		if value:
+			href[kwargs['slug0']] = "{}{}/".format(href["category"], kwargs['slug0'])
+			# you need __ to join on tables
+			series = SomeSeries.objects.filter(series_category__slug=kwargs['slug0'])
+			series_slugs = [s.slug for s in series.all()]
+			value = f.find_slug(series_slugs, 'slug1', kwargs)
+			if value:
+				href[kwargs['slug1']] = "{}{}/".format(href[kwargs['slug0']], kwargs['slug1'])
+				contexts = SomeContext.objects.filter(context_series__slug=kwargs['slug1'])
+				contexts_slug = [c.slug for c in contexts.all()]
+				value = f.find_slug(contexts_slug, 'slug2', kwargs)
+				if value:
+					href[kwargs['slug2']] = "{}{}/".format(href[kwargs['slug1']], kwargs['slug2'])
+					context = contexts.filter(slug=kwargs['slug2'])
+					return render(
+						request=request,
+						template_name="main/content.html",
+						context={"content": context.all()[0], "href": href, "categories": contexts.all()}
+					)
+				return render(
+					request=request,
+					template_name="main/category.html",
+					context={"categories": contexts.all(), "href": href}
+				)
+			return render(
+				request=request,
+				template_name="main/category.html",
+				context={"categories": series.all(), "href": href}
+			)
+	return render(
+		request=request,
+		template_name="main/category.html",
+		context={"categories": SomeCategory.objects.all(), "href": href}
+	)
 
 def homepage(request):
 	return render(
@@ -156,9 +194,9 @@ def testing_stuff(request):
 			# image_file = StringIO(str(raw_img.read()))
 
 			# img = cv2.imdecode(np.fromstring(raw_img.read(), np.uint8), cv2.IMREAD_UNCHANGED)
-			img = Image.open(BytesIO(uploaded_img.read()))
+			img = Image.open(uploaded_img.file.name)
 
-			img = down_size_image(img, 1000)
+			img = f.down_size_image(img, 720)
 
 			# loads model for detecting face
 			# haar_cascade_face = MainConfig.FACE_DETECTOR
@@ -168,19 +206,20 @@ def testing_stuff(request):
 				faces_rects = MainConfig.FACE_DETECTOR.detect_faces(np.array(img)[:, :, :3])
 
 			if len(faces_rects) > 0:
-				img = get_face(img, 64, faces_rects)
+				img = f.get_face(img, 64, faces_rects)
 
+				# grab image details
+				file_img = uploaded_img.file
 				# saving image
-				img_file = BytesIO()
-				img.save(img_file, 'PNG')
-				uploaded_img.file = img_file
+				img.save(file_img, format="PNG")
+				uploaded_img.file = file_img
 				final_img = form.save()
 
 				# predicting with model
 				with graph.as_default():
 					# ins = img_to_array(load_img(final_img.image.path))
 					prediction = MainConfig.MODEL.predict(np.array([np.array(img)[:, :, :3]/255.]))
-					attributes = format_predictions(prediction[0], MainConfig.LABELS)
+					attributes = f.format_predictions(prediction[0], MainConfig.LABELS)
 
 					return HttpResponse(
 						"""
@@ -246,15 +285,15 @@ def neural_networks(request):
 			uploaded_img = form.cleaned_data.get("image")
 
 			#convert to pillow.Image
-			img = Image.open(BytesIO(uploaded_img.read()))
+			img = Image.open(uploaded_img.file.name)
 
 			#makes img small if too big
-			img = down_size_image(img, 1000)
+			img = f.down_size_image(img, 720)
 
 
 			with graph.as_default():
 				#grab face
-				faces_rects = MainConfig.FACE_DETECTOR.detect_faces(to_np_image(img))
+				faces_rects = MainConfig.FACE_DETECTOR.detect_faces(f.to_np_image(img))
 
 			if len(faces_rects) > 0:
 				if len(faces_rects) > 1:
@@ -263,19 +302,20 @@ def neural_networks(request):
 						message="There's like {} faces in that photo, picking the first one.".format(len(faces_rects))
 					)
 				#get face from landmarks
-				img = get_face(img, 64, faces_rects)
+				img = f.get_face(img, 64, faces_rects)
 
+				# grab image details
+				file_img = uploaded_img.file
 				# saving image
-				img_file = BytesIO()
-				img.save(img_file, 'PNG')
-				uploaded_img.file = img_file
+				img.save(file_img, format="PNG")
+				uploaded_img.file = file_img
 				final_img = form.save()
 
 				# predicting with model
 				with graph.as_default():
 					#classify image
-					prediction = MainConfig.MODEL.predict(np.array([np.array(img)[:, :, :3]/255.]))
-					attributes = format_predictions(prediction[0], MainConfig.LABELS)
+					prediction = MainConfig.MODEL.predict(np.array([f.to_np_image(img)/255.]))
+					attributes = f.format_predictions(prediction[0], MainConfig.LABELS)
 					return render(
 						request=request,
 						template_name="main/neural-networks.html",

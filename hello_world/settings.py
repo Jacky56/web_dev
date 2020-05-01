@@ -163,6 +163,6 @@ TINYMCE_DEFAULT_CONFIG = {
 # and use from django.conf import settings
 HELLO_WORLD = "hello world"
 
-# FILE_UPLOAD_HANDLERS = [
-#     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
-# ]
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]
