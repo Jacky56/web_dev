@@ -45,8 +45,31 @@ class Functions:
         # remove alpha
         return np_img[:, :, :3]
 
-    def format_predictions(self, predictions, labels) :
-        attributes = [e[1] for e in zip(predictions, labels) if e[0] > 0.1]
+    def format_predictions(self, predictions, labels):
+        #attributes = [e[1] for e in zip(predictions, labels) if e[0] > 0.1]
+        attributes = []
+
+        for label, pred in zip(labels, predictions):
+            if "Male" == label:
+                if pred > 0.25:
+                    attributes.append(label)
+                elif pred < -0.25:
+                    attributes.append("Female")
+
+            elif "Attractive" == label:
+                if pred > 0.5:
+                    attributes.append(label)
+
+            elif "Young" == label:
+                if pred > 0.4:
+                    attributes.append(label)
+                elif pred < -0.7:
+                    attributes.append("Old")
+
+            else:
+                if pred > 0.1:
+                    attributes.append(label)
+
         return attributes
 
     def find_slug(self, slugs: List[str], slug: str, kwargs) -> bool:
