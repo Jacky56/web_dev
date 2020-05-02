@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import SomeContext, SomeCategory, SomeSeries, UploadImagesNN
+from .models import SomeContext, SomeCategory, SomeSeries, UploadImagesNN, cv
 from django.contrib import messages
 # from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
@@ -346,4 +346,13 @@ def chris(request):
 	return render(
 		request = request,
 		template_name = "main/chris.html",
+	)
+
+def info(request):
+	cv_data = cv.objects.all()[0]
+
+	return render(
+		request=request,
+		template_name="main/info.html",
+		context={"cv": cv_data}
 	)

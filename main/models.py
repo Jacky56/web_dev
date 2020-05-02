@@ -8,6 +8,14 @@ from django.db.models.signals import post_save
 
 # creates a table in database with these fields
 
+class cv(models.Model):
+    practical_skills = models.TextField()
+    education = models.TextField()
+    interest = models.TextField()
+    experience = models.TextField()
+    projects = models.TextField()
+
+    date = models.DateField()
 
 class SomeCategory(models.Model):
     title = models.CharField(max_length=200)

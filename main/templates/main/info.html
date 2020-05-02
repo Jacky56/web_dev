@@ -1,0 +1,94 @@
+{% extends "main/layout.html" %}
+
+{% load static %}
+
+{%block content%}
+<br>
+
+<div class="container">
+    <div class="section white">
+
+      <div class="row container">
+          <h2 class="header">Jacky Banh Ha</h2>
+          <div class="divider"></div>
+        </div>
+
+    <div class="row container valign-wrapper">
+      <div class="col s12 m9 l9 left">
+        <p class="grey-text text-darken-3 lighten-3">
+          Hello to the one viewing this,
+            <br>
+            <br>
+            This website is a summary of my tech stack and to put it into practice.
+            <br>
+            Mess around with the features of the website e.g <a href="/neural-networks/">neural networks page</a>.
+            <br>
+            <br>
+            Please enjoy and message me back about any queries about this website, you can find my contacts at the bottom of the page.
+        </p>
+      </div>
+      <div class="col m3 l3 right hide-on-small-and-down">
+        <img class="responsive-img" src="{% static 'main/images/prinny.jpg' %}" />
+      </div>
+    </div>
+
+<!--      <div class="row container">-->
+<!--          <h4 class="header">PRACTICAL SKILLS</h4>-->
+<!--          <div class="divider"></div>-->
+<!--        </div>-->
+
+<!--        <div class="row container">-->
+<!--            {{ cv.practical_skills | safe}}-->
+<!--        </div>-->
+
+<!--      <div class="row container">-->
+<!--          <h4 class="header">EDUCATION</h4>-->
+<!--          <div class="divider"></div>-->
+<!--        </div>-->
+
+<!--        <div class="row container">-->
+<!--            {{ cv.education | safe}}-->
+<!--        </div>-->
+
+<!--      <div class="row container">-->
+<!--          <h4 class="header">INTEREST AND ACTIVITIES</h4>-->
+<!--          <div class="divider"></div>-->
+<!--        </div>-->
+
+<!--        <div class="row container">-->
+<!--            {{ cv.interest | safe}}-->
+<!--        </div>-->
+
+      <div class="row container">
+          <h4 class="header">EXPERIENCE</h4>
+          <div class="divider"></div>
+        </div>
+
+        <div class="row container">
+            {{ cv.experience | safe}}
+        </div>
+
+      <div class="row container">
+          <h4 class="header">PERSONAL PROJECTS</h4>
+          <div class="divider"></div>
+        </div>
+
+        <div class="row container">
+            {{ cv.projects | safe}}
+        </div>
+
+
+<!--    <div class="row container">-->
+<!--        <div class="divider"></div>-->
+<!--        <div class="right">-->
+<!--            <h4>{{ cv.date }}</h4>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    </div>
+</div>
+
+
+{% include "main/includes/tech-stack.html" %}
+
+{%endblock%}
