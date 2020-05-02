@@ -28,6 +28,7 @@ urlpatterns = [
 	path("login/", views.login_request, name="login"),
 	path("profile/", views.profile, name="profile"),
 	path("neural-networks/", views.neural_networks, name="neural-networks"),
+	path("info/", views.info, name="info"),
 	path("category/<slug0>/", views.category_slug_url, name="series"),
 	path("category/<slug0>/<slug1>/", views.category_slug_url, name="contents"),
 	path("category/<slug0>/<slug1>/<slug2>/", views.category_slug_url, name="content"),

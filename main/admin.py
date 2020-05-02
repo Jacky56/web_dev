@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from tinymce.widgets import TinyMCE
 from django.db import models
-from .models import SomeCategory, SomeSeries, SomeContext, UserProfile, UploadImagesNN
+from .models import SomeCategory, SomeSeries, SomeContext, UserProfile, UploadImagesNN, cv
 
 
 # Register your models here.
@@ -38,3 +38,4 @@ admin.site.register(SomeCategory, some_layout_thing)
 admin.site.register(SomeSeries, some_layout_thing)
 admin.site.register(UserProfile)
 admin.site.register(UploadImagesNN)
+admin.site.register(cv, some_layout_thing)
